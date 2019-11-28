@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Hello cube (single color)</title>
+    <script src="lib/webgl-utils.js"></script>
+    <script src="lib/cuon-utils.js"></script>
+    <script src="lib/cuon-matrix.js"></script>
+    <script src="lib/webgl-debug.js"></script>
+    <link rel="stylesheet" href="btl.css">
+    <script src="btl.js"></script>
+    <script src="btl_event.js"></script>
+  </head>
+
+  <body onload="main()">
+    <div class = "canvas">
+      <canvas id="webgl" width="400" height="400">
+      Please use a browser that supports "canvas"
+      </canvas>
+    </div>
+    <p id="#tx"></p>
+
+    <div class = "functions">
+      <div class="subfunc">
+        <label>Góc xoay</label>
+        <input type='text' oninput="changeRotate(this.value)" placeholder="0.0 (default)" class='smInput' id="angle">
+        <label>Trục 0x</label>
+        <input type='text' oninput="changeRotate0x(this.value)" placeholder="0.0 (default)" class='smInput'>
+        <label>Trục 0y</label>
+        <input type='text' oninput="changeRotate0y(this.value)" placeholder="0.0 (default)" class='smInput'>
+        <label>Trục 0z</label>
+        <input type='text' oninput="changeRotate0z(this.value)" placeholder="1.0 (default)" class='smInput'>
+      </div>
+      <hr>
+      <div class="subfunc">
+        <label>Chiếu sáng:</label>
+        <label>Đèn 1</label>
+        <input type="checkbox" name = "chucnang">
+        <label>Đèn 2</label>
+        <input type="checkbox" name = "chucnang">
+        <label>Đèn 3</label>
+        <input type="checkbox" name = "chucnang">
+        <label>Đèn 4</label>
+        <input type="checkbox" name = "chucnang">
+      </div>
+      <hr>
+      <div class="subfunc">
+        <label>Tịnh tiến:</label>
+        <label>Trục x</label>
+        <input type='text' oninput="changeTxValue(this.value)" class='smInput' placeholder="0.0 (default)" id='txtTransOx'>
+        <label>Trục y</label>
+        <input type='text' oninput="changeTyValue(this.value)" class='smInput' placeholder="0.0 (default)" id='txtTransOy'>
+        <label>Trục z</label>
+        <input type='text' oninput="changeTzValue(this.value)" class='smInput' placeholder="0.0 (default)" id='txtTransOz'>
+      </div>
+      <hr>
+      <div class="subfunc">
+        <label>Co dãn: </label>
+        <label>Sx: </label>
+        <input type='text' oninput="changeSxValue(this.value)" placeholder="0.0 (default)" class='smInput' id='txtScaleX'>
+        <label>Sy: </label>
+        <input type='text' oninput="changeSyValue(this.value)" placeholder="0.0 (default)" class='smInput'id='txtScaleY'>
+        <label>Sz: </label>
+        <input type='text' oninput="changeSzValue(this.value)" placeholder="0.0 (default)" class='smInput'id='txtScaleZ'>
+      </div>
+      <hr>
+      <div class="subfunc">
+        <label>Góc nhìn:</label></br>
+        <label>Điểm mắt</label>
+        <input type='text' oninput="changeExValue(this.value)" class='smInput' placeholder="x = 0.0 (default)">
+        <input type='text' oninput="changeEyValue(this.value)" class='smInput' placeholder="y = 0.0 (default)">
+        <input type='text' oninput="changeEzValue(this.value)" class='smInput' placeholder="z = 0.0 (default)">
+        </br>
+        <label>Điểm nhìn</label>
+        <input type='text' oninput="changeAxValue(this.value)" class='smInput' placeholder="x = 0.0 (default)">
+        <input type='text' oninput="changeAyValue(this.value)" class='smInput' placeholder="y = 0.0 (default)">
+        <input type='text' oninput="changeAzValue(this.value)" class='smInput' placeholder="z = 0.0 (default)">
+        </br>
+        <label>Vector đỉnh</label>
+        <input type='text' oninput="changeUxValue(this.value)" class='smInput' placeholder="x = 0.0 (default)">
+        <input type='text' oninput="changeUyValue(this.value)" class='smInput' placeholder="y = 0.0 (default)">
+        <input type='text' oninput="changeUzValue(this.value)" class='smInput' placeholder="z = 0.0 (default)">
+      </div>
+      <hr>
+      <div class="subfunc">
+          <label>Phạm vi quan sát:</label></br>
+          <label>Fov</label>
+          <input type='text' oninput="changeFovValue(this.value)" class='smInput' placeholder="x = 0.0 (default)">
+          </br>
+          <label>Aspect</label>
+          <input type='text' oninput="changeAspectValue(this.value)" class='smInput' placeholder="x = 0.0 (default)">
+          </br>
+          <label>Near</label>
+          <input type='text' oninput="changeNearValue(this.value)" class='smInput' placeholder="x = 0.0 (default)">
+          </br>
+          <label>Far</label>
+          <input type='text' oninput="changeFarValue(this.value)" class='smInput' placeholder="x = 0.0 (default)">
+        </div>
+      <hr>
+      <div class="subfunc">
+        <label>Animation</label>
+        <input type="checkbox" name = "isContinues" onclick="changeStatus(this.checked)">
+      </div>
+      <div class = "hiddenAnimateClass" id='hiddenAnimate' style='display: none;'>
+        <div class='func_block'>
+            <input type="checkbox" name = "isContinues" onclick="rotateContinuesly(this.checked)">
+            <label>Xoay liên tục</label>
+          <div class="hiddenFunc_block" id="rotateAnimate" style="display: none;">
+            <lable>Tốc độ xoay</lable>
+            <input type='text' oninput="changeRotateSpeed(this.value)" class='smInput' placeholder="0.1 (default)">
+          </div>
+        </div>
+        <div class='func_block'>
+          <input type="checkbox" name = "isContinues" onclick="transContinuesly(this.checked)">
+          <label>Dịch chuyển liên tục</label>
+          <div id="transAnimate" style="display: none;">
+            <div class="hiddenFunc_block">
+              <lable>Tốc độ tịnh tiến x</lable>
+              <input type="text" name = "isContinues" oninput="transCorX(this.value)" class='smInput' placeholder="0.01 (default)">
+              </div>
+            <div class="hiddenFunc_block">
+              <lable>Tốc độ tịnh tiến y</lable>
+              <input type="text" name = "isContinues" oninput="transCorY(this.value)" class='smInput' placeholder="0.0 (default)">
+              
+            </div>
+            <div class="hiddenFunc_block">
+                <lable>Tốc độ tịnh tiến z</lable>
+                <input type="text" name = "isContinues" oninput="transCorZ(this.value)" class='smInput' placeholder="0.0 (default)">
+                
+            </div>
+          </div>
+        
+        </div>
+        <div class='func_block'>
+            <input type="checkbox" name = "isContinues" onclick="scaleContinuesly(this.checked)">
+            <label>Co dãn tuần hoàn</label>
+            <div id="scaleAnimate" style="display: none;">
+              <div class="hiddenFunc_block">
+                <lable>Dãn max</lable>
+                <input type='text' oninput="changeScaleMax(this.value)" class='smInput' placeholder="1.0 (default)">
+              </div>
+              <div class="hiddenFunc_block">
+                  <lable>Dãn min</lable>
+                  <input type='text' oninput="changeScaleMin(this.value)" class='smInput' placeholder="0.0 (default)">
+              </div>
+              <div class="hiddenFunc_block">
+                  <lable>Tốc độ dãn</lable>
+                  <input type='text' oninput="changeScaleSpeed(this.value)" class='smInput' placeholder="0.01 (default)">
+              </div>
+
+        </div>
+      </div>
+
+
+    </div>
+    
+
+    
+  </body>
+</html>

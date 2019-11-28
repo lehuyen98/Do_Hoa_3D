@@ -1,0 +1,21 @@
+.canvas{
+    float:left;
+    margin-right: 20px;
+}
+
+.functions{
+    float:left;
+}
+
+.smInput{
+    width: 100px;
+}
+
+.subfunc{
+    margin-bottom: 5px;
+}
+
+.hiddenFunc_block{
+    /* display: none; */
+    margin-left: 2em;
+}
